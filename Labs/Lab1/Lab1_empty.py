@@ -157,9 +157,9 @@ def FAST():
 def main():
     #INS. COMMENT Call the above three functions. Keep in mind that SIFT(...) requires two arguments.
     h_factor = 512; w_factor = 512
-    # SIFT(h_factor, w_factor)
+    SIFT(h_factor, w_factor)
     HOG()
-    # FAST()
+    FAST()
     
 
 if __name__ == "__main__":
