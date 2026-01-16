@@ -60,11 +60,11 @@ def SIFT(h_factor, w_factor):
 
     # Alternate scaling - double the height of the images
     img1_scaled_wide = cv2.resize(img1, (h_factor * 2, w_factor))
-    img2_scaled_wide = cv2.resize(img1, (h_factor * 2, w_factor))
+    img2_scaled_wide = cv2.resize(img2, (h_factor * 2, w_factor))
 
     # Alternate scaling - double the width of the images
     img1_scaled_tall = cv2.resize(img1, (h_factor, w_factor * 2))
-    img2_scaled_tall = cv2.resize(img1, (h_factor, w_factor * 2))
+    img2_scaled_tall = cv2.resize(img2, (h_factor, w_factor * 2))
     
     #INS. COMMENT Use SIFT to match the features between the two images
     #INS. COMMENT I recommend you use two built-in objects (see online documentation)
@@ -157,9 +157,9 @@ def FAST():
 def main():
     #INS. COMMENT Call the above three functions. Keep in mind that SIFT(...) requires two arguments.
     h_factor = 512; w_factor = 512
-    SIFT(h_factor, w_factor)
+    # SIFT(h_factor, w_factor)
     HOG()
-    FAST()
+    # FAST()
     
 
 if __name__ == "__main__":
