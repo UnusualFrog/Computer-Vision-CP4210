@@ -106,11 +106,20 @@ def color_adj(image):
     return B, G, R
 
 def image_denoise(image):
-    sigma = 1.5
+    # Use Gaussian Blur to denoise
+    # sigma = 1.5
+    # denoise_image = cv2.GaussianBlur(image, (3,3), sigma)
     
-    denoise_image = cv2.GaussianBlur(image, (3,3), sigma)
+    #Use median blur to denoise
+    kernel_size = 3
+    img_Mblur = cv2.medianBlur(image, kernel_size)
     
-    return denoise_image
+    # NLM Blur
+    img_NLMBlur = cv2.fastNlMeansDenoising(image, h=10, templateWindowSize=7, searchWindowSize=21)
+    
+    # return denoise_image
+    # return img_Mblur
+    return img_NLMBlur
     
 
 
