@@ -1,6 +1,6 @@
 import cv2 as cv
 import numpy as np
-import skimage
+from skimage.exposure import match_histograms
 
 def imgFilter():
     # INS. COMMENT Load the image 'Sample.jpg'
@@ -33,9 +33,12 @@ def imgFilter():
     ])
     
     #NOTE: Uncomment desired sharpening kernel
-    # img_sharp = cv.filter2D(img, image_depth, kernel_sharp_laplacian)
-    img_sharp = cv.filter2D(img, image_depth, kernel_sharp_high_pass)
+    img_sharp = cv.filter2D(img, image_depth, kernel_sharp_laplacian)
+    # img_sharp = cv.filter2D(img, image_depth, kernel_sharp_high_pass)
     # img_sharp = cv.filter2D(img, image_depth, kernel_sharp_unsharp_mask)
+
+    # Handle negative values for proper display
+    img_sharp = cv.convertScaleAbs(img_sharp)
 
     # cv.imshow('sharpend', img_sharp)
     # cv.waitKey(0)
@@ -99,8 +102,8 @@ def imgFilter():
 
     #NOTE: Uncomment for desired result
     # result = img_sobel
-    result = img_prewitt
-    # result = img_laplacian
+    # result = img_prewitt
+    result = img_laplacian
     
     return result
 
@@ -138,22 +141,39 @@ def imgMorph():
 
     # INS. COMMENT Perform image closing by using the built-in morphologyEx(...) in opencv
     img_close = cv.morphologyEx(img, cv.MORPH_CLOSE, current_kernel)
-    cv.imshow("Close", img_close)
-    cv.waitKey(0)
+    # cv.imshow("Close", img_close)
+    # cv.waitKey(0)
 
     # INS. COMMENT Perform image closing by using the built-in erode(...) and dilate(...) in opencv
     img_close_manual = cv.erode(cv.dilate(img, current_kernel, iterations=1), current_kernel, iterations=1)
-    cv.imshow("Closing with manual steps", img_close_manual)
-    cv.waitKey(0)
+    # cv.imshow("Closing with manual steps", img_close_manual)
+    # cv.waitKey(0)
 
-    return
+    return img_erode, img_dilate, img_open, img_open_manual, img_close, img_close_manual
 
 def imgHist():
+    # Load image
+    img = cv.imread("Sample.jpg", 0)
+
+    # cv.imshow("matched hist", img)
+    # cv.waitKey(0)
+
     # INS. COMMENT Perform equalized histogram on the original image using the built-in equalizeHist(...) in opencv
+    img_equ = cv.equalizeHist(img)
+
+    cv.imshow("equalizedHist", img_equ)
+    cv.waitKey(0)
 
     # INS. COMMENT Try to get the equalized histogram on the original image using the built-in match_histograms(...) in skimage
+    img_matched = match_histograms(img, img_equ)
 
-    return
+    # Convert iamge to opencv uint8 format for proper display
+    img_matched = img_matched.astype(np.uint8)
+
+    cv.imshow("matched hist", img_matched)
+    cv.waitKey(0)
+
+    return img_equ, img_matched
 
 def main():
     result_filter = imgFilter()
@@ -161,11 +181,11 @@ def main():
     # cv.waitKey(0)
 
     result_morph = imgMorph()
-    cv.imshow("imgMorph Result", result_morph)
+    cv.imshow("imgMorph Result", result_morph[0])
     cv.waitKey(0)
 
     result_hist = imgHist()
-    # cv.imshow("imgHist Result", result_hist)
+    # cv.imshow("imgHist Result", result_hist[0])
     # cv.waitKey(0)
 
 if __name__ == "__main__":
