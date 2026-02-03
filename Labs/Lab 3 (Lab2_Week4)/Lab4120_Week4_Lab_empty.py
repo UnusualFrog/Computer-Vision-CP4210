@@ -21,7 +21,7 @@ def imgFilter():
     # === High-passs sharpening kernel === 
     kernel_sharp_high_pass = np.array([
         [-1, -1, -1],
-        [-1, 8, -1],
+        [-1, 9, -1],
         [-1, -1, -1]
     ])
 
@@ -32,23 +32,30 @@ def imgFilter():
         [-1, -2, -1],
     ])
     
-    #NOTE: Uncomment desired sharpening kernel
-    img_sharp = cv.filter2D(img, image_depth, kernel_sharp_laplacian)
-    # img_sharp = cv.filter2D(img, image_depth, kernel_sharp_high_pass)
-    # img_sharp = cv.filter2D(img, image_depth, kernel_sharp_unsharp_mask)
+    img_sharp_lp = cv.filter2D(img, image_depth, kernel_sharp_laplacian)
+    img_sharp_hp = cv.filter2D(img, image_depth, kernel_sharp_high_pass)
+    img_sharp_um = cv.filter2D(img, image_depth, kernel_sharp_unsharp_mask)
 
     # Handle negative values for proper display
-    img_sharp = cv.convertScaleAbs(img_sharp)
+    img_sharp_lp = cv.convertScaleAbs(img_sharp_lp)
+    img_sharp_hp = cv.convertScaleAbs(img_sharp_hp)
+    img_sharp_um = cv.convertScaleAbs(img_sharp_um)
 
-    # cv.imshow('sharpend', img_sharp)
-    # cv.waitKey(0)
+    cv.imshow('Laplacian Sharpening', img_sharp_lp)
+    cv.waitKey(0)
+
+    cv.imshow('High Pass Sharpening', img_sharp_hp)
+    cv.waitKey(0)
+
+    cv.imshow('Unsharp Mask Sharpening', img_sharp_um)
+    cv.waitKey(0)
 
     # INS. COMMENT Create the kernel used for edge detection
     
     # === Sobel edge detection === 
     # Calculate x and y derivatives for image
-    grad_x = cv.Sobel(img_sharp, image_depth, 1, 0)
-    grad_y = cv.Sobel(img_sharp, image_depth, 0, 1)
+    grad_x = cv.Sobel(img, image_depth, 1, 0)
+    grad_y = cv.Sobel(img, image_depth, 0, 1)
 
     # Combine gradient magnitude values to combine x and y gradients to 1 image
     img_grad = np.sqrt(grad_x.astype(float)**2, grad_y.astype(float)**2)
@@ -56,8 +63,8 @@ def imgFilter():
     # Handle signed gradient values 
     img_sobel = cv.convertScaleAbs(img_grad)
         
-    # cv.imshow("Sobel", img_sobel)
-    # cv.waitKey(0)
+    cv.imshow("Sobel Edge Detection", img_sobel)
+    cv.waitKey(0)
 
     # ===  Prewitt edge detection === 
     kernel_prewitt_x = np.array([
@@ -73,20 +80,20 @@ def imgFilter():
     ])
 
     # Apply kernels 
-    img_prewitt_x = cv.filter2D(img_sharp, image_depth, kernel_prewitt_x)
-    img_prewitt_y = cv.filter2D(img_sharp, image_depth, kernel_prewitt_y)
+    img_prewitt_x = cv.filter2D(img, image_depth, kernel_prewitt_x)
+    img_prewitt_y = cv.filter2D(img, image_depth, kernel_prewitt_y)
 
     # combine and handle signed gradient values
     img_magnitude = np.sqrt(img_prewitt_x.astype(float)**2, img_prewitt_y.astype(float)**2)
 
     img_prewitt = cv.convertScaleAbs(img_magnitude)
 
-    # cv.imshow("Prewitt", img_prewitt)
-    # cv.waitKey(0)
+    cv.imshow("Prewitt Edge Detection", img_prewitt)
+    cv.waitKey(0)
 
     # === Laplacian edge detection ===
     # Blur the image to remove noise as laplacian is sensitive to noise
-    blurred = cv.GaussianBlur(img_sharp, (5,5), 0)
+    blurred = cv.GaussianBlur(img, (5,5), 0)
 
     # Apply the laplacian function with CV_64F to handle negative values
     laplacian = cv.Laplacian(blurred, cv.CV_64F)
@@ -97,15 +104,10 @@ def imgFilter():
     # Convert back to original image format for display
     img_laplacian = np.uint8(laplacian_abs)
 
-    # cv.imshow("Laplacian", img_laplacian)
-    # cv.waitKey(0)
-
-    #NOTE: Uncomment for desired result
-    # result = img_sobel
-    # result = img_prewitt
-    result = img_laplacian
+    cv.imshow("Laplacian Edge Detection", img_laplacian)
+    cv.waitKey(0)
     
-    return result
+    return img_sharp_lp, img_sharp_hp, img_sharp_um, img_sobel, img_prewitt, img_laplacian
 
 def imgMorph():
     # INS. COMMENT Load the image 'Sample.jpg'
@@ -121,42 +123,39 @@ def imgMorph():
 
     # INS. COMMENT Erode the image
     img_erode = cv.erode(img, current_kernel, iterations=1)
-    # cv.imshow("Erode", img_erode)
-    # cv.waitKey(0)
+    cv.imshow("Erode", img_erode)
+    cv.waitKey(0)
 
     # INS. COMMENT Dilate the image
     img_dilate = cv.dilate(img, current_kernel, iterations=1)
-    # cv.imshow("Dilate", img_dilate)
-    # cv.waitKey(0)
+    cv.imshow("Dilate", img_dilate)
+    cv.waitKey(0)
 
     # INS. COMMENT Perform image opening by using the built-in morphologyEx(...) in opencv
     img_open = cv.morphologyEx(img, cv.MORPH_OPEN, current_kernel)
-    # cv.imshow("Opening", img_open)
-    # cv.waitKey(0)
+    cv.imshow("Opening", img_open)
+    cv.waitKey(0)
 
     # INS. COMMENT Perform image opening by using the built-in erode(...) and dilate(...) in opencv
     img_open_manual = cv.dilate(cv.erode(img, current_kernel, iterations=1), current_kernel, iterations=1)
-    # cv.imshow("Opening with manual steps", img_open_manual)
-    # cv.waitKey(0)
+    cv.imshow("Opening with manual steps", img_open_manual)
+    cv.waitKey(0)
 
     # INS. COMMENT Perform image closing by using the built-in morphologyEx(...) in opencv
     img_close = cv.morphologyEx(img, cv.MORPH_CLOSE, current_kernel)
-    # cv.imshow("Close", img_close)
-    # cv.waitKey(0)
+    cv.imshow("Close", img_close)
+    cv.waitKey(0)
 
     # INS. COMMENT Perform image closing by using the built-in erode(...) and dilate(...) in opencv
     img_close_manual = cv.erode(cv.dilate(img, current_kernel, iterations=1), current_kernel, iterations=1)
-    # cv.imshow("Closing with manual steps", img_close_manual)
-    # cv.waitKey(0)
+    cv.imshow("Closing with manual steps", img_close_manual)
+    cv.waitKey(0)
 
     return img_erode, img_dilate, img_open, img_open_manual, img_close, img_close_manual
 
 def imgHist():
     # Load image
     img = cv.imread("Sample.jpg", 0)
-
-    # cv.imshow("matched hist", img)
-    # cv.waitKey(0)
 
     # INS. COMMENT Perform equalized histogram on the original image using the built-in equalizeHist(...) in opencv
     img_equ = cv.equalizeHist(img)
@@ -177,12 +176,12 @@ def imgHist():
 
 def main():
     result_filter = imgFilter()
-    # cv.imshow("imgFilter Result", result_filter)
+    # cv.imshow("imgFilter Result", result_filter[0])
     # cv.waitKey(0)
 
     result_morph = imgMorph()
-    cv.imshow("imgMorph Result", result_morph[0])
-    cv.waitKey(0)
+    # cv.imshow("imgMorph Result", result_morph[0])
+    # cv.waitKey(0)
 
     result_hist = imgHist()
     # cv.imshow("imgHist Result", result_hist[0])
