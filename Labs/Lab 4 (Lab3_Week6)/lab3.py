@@ -2,9 +2,6 @@
 import numpy as np
 import cv2 as cv
 import matplotlib.pyplot as plt
-import requests
-from PIL import Image
-from io import BytesIO
 
 def low_pass(img, fft):
     # Generate a mask for a low pass filtering
