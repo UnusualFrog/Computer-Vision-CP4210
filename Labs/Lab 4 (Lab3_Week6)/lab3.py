@@ -47,7 +47,7 @@ def high_pass(img, fft):
     image_filtered_high_pass = np.abs(image_filtered_high_pass)
 
     # Show image
-    plt.imshow(image_filtered_high_pass, cmap='gray')
+    plt.imshow(image_filtered_high_pass)
     plt.title('high pass filter')
     plt.show()
 
