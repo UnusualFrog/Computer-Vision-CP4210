@@ -40,7 +40,7 @@ def main():
         _, descriptors = sift.detectAndCompute(gray, None)
         if descriptors is not None:
             all_descriptors.append(descriptors)
-    # Save all descriptors into a 1D array
+    # Save all descriptors into a single array
     all_descriptors = np.vstack(all_descriptors)
 
     """ 4. Build your visual vocabulary """
@@ -133,9 +133,10 @@ def main():
     y_val = np.array(y_val)
 
     """ 5. Plot average histogram per class """
+    # One histogram per class
     _, axes = plt.subplots(1, len(class_names_train), figsize=(15, 4))
-
     for ax, class_name in zip(axes, class_names_train):
+        # calculate per-class avergae histogram
         avg_histogram = class_histograms_train[class_name] / class_counts_train[class_name]
         ax.bar(range(k), avg_histogram)
         ax.set_title(class_name)
@@ -157,6 +158,7 @@ def main():
     print(classification_report(y_test, pred))
     # print(classification_report(y_val, pred_val))
     
+    """ 7. Plot the performance metrics of your classifier model in terms of a confusion matrix """
     cm = confusion_matrix(y_test, pred)
     # cm_val = confusion_matrix(y_val, pred_val)
     
