@@ -1,3 +1,6 @@
 venv/
 Data/
 Output/
+runs/
+yolo26n.pt
+yolov8n-obb.pt
