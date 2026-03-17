@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # Load the image
 image = cv2.imread("kings_hand.jpg")
 
-image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+image_color_corrected = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
 # Apply grayscale and gaussian blur to reduce noise 
 gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -39,7 +39,7 @@ img_prewitt_uint8 = cv2.convertScaleAbs(img_prewitt)
 
 # Compare the original image to the Prewitt image
 fig, ax = plt.subplots(1,2)
-ax[0].imshow(image)
+ax[0].imshow(image_color_corrected)
 ax[0].set_title('Original Image')
 
 ax[1].imshow(img_prewitt_uint8, cmap='gray')
