@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 # Load the image
 image = cv2.imread("kings_hand.jpg")
 
+image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
 # Apply grayscale and gaussian blur to reduce noise 
 gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 img_gaussian = cv2.GaussianBlur(gray_image, (3, 3), 0)
@@ -35,8 +37,11 @@ img_prewitt = np.sqrt(img_prewittx.astype(np.float32)**2 + img_prewitty.astype(n
 # Convert the image back to uint8
 img_prewitt_uint8 = cv2.convertScaleAbs(img_prewitt)
 
-# Display the Prewitt image
-plt.figure(figsize=(6, 6))
-plt.imshow(img_prewitt_uint8, cmap='gray')
-plt.title('Prewitt Edge Detection')
+# Compare the original image to the Prewitt image
+fig, ax = plt.subplots(1,2)
+ax[0].imshow(image)
+ax[0].set_title('Original Image')
+
+ax[1].imshow(img_prewitt_uint8, cmap='gray')
+ax[1].set_title('Prewitt Edge Detection')
 plt.show()
